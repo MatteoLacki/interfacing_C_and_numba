@@ -13,6 +13,7 @@ binding.load_library_permanently(path)
 c_func_name = "sum"
 return_type = types.int64
 argty = types.int64
+
 c_sig = typing.signature(return_type, argty, argty)
 c_func = types.ExternalFunction(c_func_name, c_sig)
 

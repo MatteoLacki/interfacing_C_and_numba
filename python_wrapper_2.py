@@ -17,3 +17,4 @@ def example(x, y):
 
 print(example(3, 4))  # 7
 print(example.py_func(3, 4))  # 7
+c_func(2, 6)
