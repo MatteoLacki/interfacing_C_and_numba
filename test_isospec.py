@@ -23,14 +23,30 @@ import ctypes
 lib = ctypes.CDLL(
     "./ve_Cnumba/lib/python3.12/site-packages/IsoSpecCppPy.cpython-312-x86_64-linux-gnu.so"
 )
-lib.getHeaviestPeakMassIso.restype = ctypes.c_double
-lib.getHeaviestPeakMassIso.argtypes = [ctypes.c_void_p]
+cfunc = lib.getHeaviestPeakMassIso
+cfunc.restype = ctypes.c_double
+cfunc.argtypes = [ctypes.POINTER(ctypes.c_int)]
 
 x = IsoSpecPy.Iso("C10")
+cfunc(x)
+
+
+@njit
+def example():
+    return cfunc(x)
+
+
+print(example())  # 7
 
 
 # Get the raw function pointer
 func_ptr = ctypes.cast(lib.getHeaviestPeakMassIso, ctypes.c_void_p).value
+
+
+@njit
+def call_heaviest_peak(ptr):
+    return cfunc_type(ptr)
+
 
 # Declare the signature: double(void*)
 sig = types.double(types.voidptr)
