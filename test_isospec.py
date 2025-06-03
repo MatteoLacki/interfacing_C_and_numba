@@ -25,43 +25,53 @@ lib = ctypes.CDLL(
 )
 cfunc = lib.getHeaviestPeakMassIso
 cfunc.restype = ctypes.c_double
-cfunc.argtypes = [ctypes.POINTER(ctypes.c_int)]
+# cfunc.argtypes = [ctypes.POINTER(ctypes.c_int)]
+cfunc.argtypes = [ctypes.c_int64]
 
-x = IsoSpecPy.Iso("C10")
-cfunc(x)
+x = IsoSpecPy.Iso("C1")
+ptr_addr = int(isoFFI.ffi.cast("uintptr_t", x.iso))
+cfunc(ptr_addr)
 
 
 @njit
-def example():
+def example(x):
     return cfunc(x)
 
 
-print(example())  # 7
+example(ptr_addr)
 
 
-# Get the raw function pointer
-func_ptr = ctypes.cast(lib.getHeaviestPeakMassIso, ctypes.c_void_p).value
+# @njit
+# def example():
+#     return cfunc(x)
 
 
-@njit
-def call_heaviest_peak(ptr):
-    return cfunc_type(ptr)
+# print(example())  # 7
 
 
-# Declare the signature: double(void*)
-sig = types.double(types.voidptr)
-
-# Create a Numba "foreign function" type
-from numba import cffi_support
-from numba.core import cgutils
-
-# Create a callable function pointer
-from numba.types import ExternalFunctionPointer
-
-cfunc_type = ExternalFunctionPointer(sig, ptr=func_ptr)
+# # Get the raw function pointer
+# func_ptr = ctypes.cast(lib.getHeaviestPeakMassIso, ctypes.c_void_p).value
 
 
-# Now you can call it from JIT-compiled functions
-@njit
-def call_heaviest_peak(ptr):
-    return cfunc_type(ptr)
+# @njit
+# def call_heaviest_peak(ptr):
+#     return cfunc_type(ptr)
+
+
+# # Declare the signature: double(void*)
+# sig = types.double(types.voidptr)
+
+# # Create a Numba "foreign function" type
+# from numba import cffi_support
+# from numba.core import cgutils
+
+# # Create a callable function pointer
+# from numba.types import ExternalFunctionPointer
+
+# cfunc_type = ExternalFunctionPointer(sig, ptr=func_ptr)
+
+
+# # Now you can call it from JIT-compiled functions
+# @njit
+# def call_heaviest_peak(ptr):
+#     return cfunc_type(ptr)

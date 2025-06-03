@@ -22,3 +22,20 @@ def get_array(n):
     # Create a numpy array from the raw pointer
     arr = np.ctypeslib.as_array(ptr, shape=(n,))
     return arr
+
+
+get_array(10)
+
+
+@njit
+def process_array(arr):
+    total = 0
+    for i in range(arr.shape[0]):
+        total += arr[i]
+    return total
+
+
+n = 10
+arr = get_array(n)  # Call C code
+result = process_array(arr)  # Use inside Numba
+print(result)
